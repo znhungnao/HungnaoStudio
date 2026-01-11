@@ -2,26 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Portfolio — Hungnao Studio</title>
+  <title>Portfolio – Hungnao Studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Same fonts as homepage -->
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
   <style>
-    html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+    /* RESET */
+    * {
+      box-sizing: border-box;
     }
-    body {
+
+    html, body {
       margin: 0;
+      padding: 0;
       background: #0b0b0b;
       color: #eaeaea;
       font-family: 'Inter', sans-serif;
     }
 
+    /* WRAPPER */
     .wrapper {
       padding: 60px 20px;
       max-width: 1100px;
@@ -37,6 +38,14 @@
       letter-spacing: 1.2px;
     }
 
+    /* FEATURED IMAGE */
+    .featured {
+      width: 100%;
+      margin-bottom: 40px;
+      border-radius: 4px;
+    }
+
+    /* GRID */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -46,7 +55,8 @@
     .grid img {
       width: 100%;
       height: auto;
-      border-radius: 2px;
+      border-radius: 3px;
+      cursor: pointer;
       transition: opacity 0.3s ease;
     }
 
@@ -54,6 +64,7 @@
       opacity: 0.85;
     }
 
+    /* BACK LINK */
     .back {
       text-align: center;
       margin-top: 50px;
@@ -69,125 +80,129 @@
     .back a:hover {
       text-decoration: underline;
     }
-    
- .lightbox {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.92);
-  display: none;           /* hidden by default */
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
- }
 
-.lightbox img {
-  max-width: 95%;
-  max-height: 90%;
-  transform: scale(0.96);
-  animation: zoomIn 0.25s ease forwards;
-}
+    /* LIGHTBOX */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+    .lightbox img {
+      max-width: 95%;
+      max-height: 90%;
+      animation: zoomIn 0.25s ease forwards;
+    }
 
-@keyframes zoomIn {
-  from { transform: scale(0.96); }
-  to { transform: scale(1); }
-}
+    .lightbox-caption {
+      margin-top: 12px;
+      font-size: 14px;
+      opacity: 0.8;
+      text-align: center;
+      max-width: 90%;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.96); }
+      to { transform: scale(1); }
+    }
   </style>
 </head>
+
 <body>
 
-<!-- Lightbox -->
-<div id="lightbox" class="lightbox" onclick="closeLightbox()">
-  <img id="lightbox-img">
-  <div id="lightbox-caption"></div>
-</div>
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img">
+    <div id="lightbox-caption" class="lightbox-caption"></div>
+  </div>
 
-<div class="wrapper">
-  <h1>Portfolio</h1>
-  ...
-</div>
-
-</body>
+  <!-- CONTENT -->
   <div class="wrapper">
     <h1>Portfolio</h1>
 
-    <!-- FEATURED IMAGE (only once) -->
-    <img src="images/featured.jpg" alt="Hungnao Studio photograph">
+    <!-- FEATURED IMAGE (optional, keep or remove later) -->
+    <img src="images/featured.jpg" alt="Hungnao Studio photograph" class="featured">
 
-    <!-- GRID START -->
+    <!-- AUTO GALLERY -->
     <div class="grid" id="gallery"></div>
-    <!-- GRID END -->
 
     <div class="back">
       <a href="index.html">← Back to home</a>
     </div>
   </div>
+
+  <!-- SCRIPT -->
   <script>
-const totalPhotos = 5;
+    /* ===== CONFIG ===== */
+    const totalPhotos = 5; // change only this number
 
-const captions = [
-  "Quiet sunset by the shore",
-  "Golden hour reflections",
-  "Stillness and tide",
-  "Silhouette against fading light",
-  "Evening calm"
-];
+    const captions = [
+      "Quiet sunset by the shore",
+      "Golden hour reflections",
+      "Stillness and tide",
+      "Silhouette against fading light",
+      "Evening calm"
+    ];
+    /* ================== */
 
-const gallery = document.getElementById("gallery");
-let images = [];
-let currentIndex = 0;
+    const gallery = document.getElementById("gallery");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    const lightboxCaption = document.getElementById("lightbox-caption");
 
-// Build gallery automatically
-for (let i = 0; i < totalPhotos; i++) {
-  const img = document.createElement("img");
-  img.src = `images/photo-${String(i + 1).padStart(2, "0")}.jpg`;
-  img.dataset.caption = captions[i] || "";
-  img.onclick = () => openLightbox(i);
-  gallery.appendChild(img);
-  images.push(img);
-}
+    let images = [];
+    let currentIndex = 0;
 
-// Lightbox
-function openLightbox(index) {
-  currentIndex = index;
-  document.getElementById("lightbox-img").src = images[index].src;
-  document.getElementById("lightbox-caption").innerText =
-    images[index].dataset.caption || "";
-  document.getElementById("lightbox").style.display = "flex";
-}
+    // Build gallery automatically
+    for (let i = 0; i < totalPhotos; i++) {
+      const img = document.createElement("img");
+      img.src = `images/photo-${String(i + 1).padStart(2, "0")}.jpg`;
+      img.dataset.caption = captions[i] || "";
+      img.onclick = () => openLightbox(i);
+      gallery.appendChild(img);
+      images.push(img);
+    }
 
-function closeLightbox() {
-  document.getElementById("lightbox").style.display = "none";
-}
+    function openLightbox(index) {
+      currentIndex = index;
+      lightboxImg.src = images[index].src;
+      lightboxCaption.innerText = images[index].dataset.caption;
+      lightbox.style.display = "flex";
+    }
 
-// Swipe support
-let startX = 0;
-const lightbox = document.getElementById("lightbox");
+    function closeLightbox() {
+      lightbox.style.display = "none";
+    }
 
-lightbox.addEventListener("touchstart", e => {
-  startX = e.touches[0].clientX;
-});
+    /* Swipe support (mobile) */
+    let startX = 0;
 
-lightbox.addEventListener("touchend", e => {
-  const endX = e.changedTouches[0].clientX;
-  if (endX < startX - 50) showNext();
-  if (endX > startX + 50) showPrev();
-});
+    lightbox.addEventListener("touchstart", e => {
+      startX = e.touches[0].clientX;
+    });
 
-function showNext() {
-  currentIndex = (currentIndex + 1) % images.length;
-  openLightbox(currentIndex);
-}
+    lightbox.addEventListener("touchend", e => {
+      const endX = e.changedTouches[0].clientX;
+      if (endX < startX - 50) showNext();
+      if (endX > startX + 50) showPrev();
+    });
 
-function showPrev() {
-  currentIndex = (currentIndex - 1 + images.length) % images.length;
-  openLightbox(currentIndex);
-}
+    function showNext() {
+      currentIndex = (currentIndex + 1) % images.length;
+      openLightbox(currentIndex);
+    }
+
+    function showPrev() {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      openLightbox(currentIndex);
+    }
   </script>
+
 </body>
+</html>
