@@ -121,12 +121,7 @@
     <img src="images/featured.jpg" alt="Hungnao Studio photograph">
 
     <!-- GRID START -->
-    <div class="grid">
-  <img src="images/photo-01.jpg" data-caption="Quiet sunset by the shore" onclick="openLightbox(0)">
-  <img src="images/photo-02.jpg" data-caption="Golden hour reflections" onclick="openLightbox(1)">
-  <img src="images/photo-03.jpg" data-caption="Stillness and tide" onclick="openLightbox(2)">
-  <img src="images/photo-04.jpg" data-caption="Silhouette against fading light" onclick="openLightbox(3)">
-    </div>
+    <div class="grid" id="gallery"></div>
     <!-- GRID END -->
 
     <div class="back">
@@ -134,43 +129,65 @@
     </div>
   </div>
   <script>
-  const images = document.querySelectorAll(".grid img");
-  let currentIndex = 0;
+const totalPhotos = 5;
 
-  function openLightbox(index) {
-    currentIndex = index;
-    const img = document.getElementById("lightbox-img");
-    const caption = document.getElementById("lightbox-caption");
-    img.src = images[index].src;
-    caption.innerText = images[index].dataset.caption || "";
-    document.getElementById("lightbox").style.display = "flex";
-  }
+const captions = [
+  "Quiet sunset by the shore",
+  "Golden hour reflections",
+  "Stillness and tide",
+  "Silhouette against fading light",
+  "Evening calm"
+];
 
-  function closeLightbox() {
-    document.getElementById("lightbox").style.display = "none";
-  }
+const gallery = document.getElementById("gallery");
+let images = [];
+let currentIndex = 0;
 
-  // Swipe support
-  let startX = 0;
+// Build gallery automatically
+for (let i = 0; i < totalPhotos; i++) {
+  const img = document.createElement("img");
+  img.src = `images/photo-${String(i + 1).padStart(2, "0")}.jpg`;
+  img.dataset.caption = captions[i] || "";
+  img.onclick = () => openLightbox(i);
+  gallery.appendChild(img);
+  images.push(img);
+}
 
-  document.getElementById("lightbox").addEventListener("touchstart", e => {
-    startX = e.touches[0].clientX;
-  });
+// Lightbox
+function openLightbox(index) {
+  currentIndex = index;
+  document.getElementById("lightbox-img").src = images[index].src;
+  document.getElementById("lightbox-caption").innerText =
+    images[index].dataset.caption || "";
+  document.getElementById("lightbox").style.display = "flex";
+}
 
-  document.getElementById("lightbox").addEventListener("touchend", e => {
-    let endX = e.changedTouches[0].clientX;
-    if (endX < startX - 50) showNext();
-    if (endX > startX + 50) showPrev();
-  });
+function closeLightbox() {
+  document.getElementById("lightbox").style.display = "none";
+}
 
-  function showNext() {
-    currentIndex = (currentIndex + 1) % images.length;
-    openLightbox(currentIndex);
-  }
+// Swipe support
+let startX = 0;
+const lightbox = document.getElementById("lightbox");
 
-  function showPrev() {
-    currentIndex = (currentIndex - 1 + images.length) % images.length;
-    openLightbox(currentIndex);
-  }
+lightbox.addEventListener("touchstart", e => {
+  startX = e.touches[0].clientX;
+});
+
+lightbox.addEventListener("touchend", e => {
+  const endX = e.changedTouches[0].clientX;
+  if (endX < startX - 50) showNext();
+  if (endX > startX + 50) showPrev();
+});
+
+function showNext() {
+  currentIndex = (currentIndex + 1) % images.length;
+  openLightbox(currentIndex);
+}
+
+function showPrev() {
+  currentIndex = (currentIndex - 1 + images.length) % images.length;
+  openLightbox(currentIndex);
+}
   </script>
 </body>
