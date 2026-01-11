@@ -63,8 +63,30 @@
     .back a:hover {
       text-decoration: underline;
     }
+    .lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.lightbox img {
+  max-width: 95%;
+  max-height: 95%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
   </style>
 </head>
+  <!-- Lightbox -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img">
+</div>
 <body>
   <div class="wrapper">
     <h1>Portfolio</h1>
@@ -74,10 +96,10 @@
 
     <!-- GRID START -->
     <div class="grid">
-      <img src="images/photo-01.jpg">
-      <img src="images/photo-02.jpg">
-      <img src="images/photo-03.jpg">
-      <img src="images/photo-04.jpg">
+      <img src="images/photo-01.jpg" onclick="openLightbox(this.src)">
+<img src="images/photo-02.jpg" onclick="openLightbox(this.src)">
+<img src="images/photo-03.jpg" onclick="openLightbox(this.src)">
+<img src="images/photo-04.jpg" onclick="openLightbox(this.src)">
     </div>
     <!-- GRID END -->
 
@@ -85,4 +107,16 @@
       <a href="index.html">← Back to home</a>
     </div>
   </div>
+  <script>
+  function openLightbox(src) {
+    const lightbox = document.getElementById("lightbox");
+    const img = document.getElementById("lightbox-img");
+    img.src = src;
+    lightbox.style.display = "flex";
+  }
+
+  function closeLightbox() {
+    document.getElementById("lightbox").style.display = "none";
+  }
+  </script>
 </body>
