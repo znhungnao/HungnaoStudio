@@ -63,7 +63,8 @@
     .back a:hover {
       text-decoration: underline;
     }
-    .lightbox {
+    
+.lightbox {
   position: fixed;
   top: 0;
   left: 0;
@@ -73,21 +74,42 @@
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  flex-direction: column;
+  animation: fadeIn 0.25s ease;
 }
 
 .lightbox img {
   max-width: 95%;
-  max-height: 95%;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  max-height: 90%;
+  transform: scale(0.96);
+  animation: zoomIn 0.25s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.96); }
+  to { transform: scale(1); }
 }
   </style>
 </head>
-  <!-- Lightbox -->
+<body>
+
+<!-- Lightbox -->
 <div id="lightbox" class="lightbox" onclick="closeLightbox()">
   <img id="lightbox-img">
+  <div id="lightbox-caption"></div>
 </div>
-<body>
+
+<div class="wrapper">
+  <h1>Portfolio</h1>
+  ...
+</div>
+
+</body>
   <div class="wrapper">
     <h1>Portfolio</h1>
 
@@ -96,10 +118,10 @@
 
     <!-- GRID START -->
     <div class="grid">
-      <img src="images/photo-01.jpg" onclick="openLightbox(this.src)">
-<img src="images/photo-02.jpg" onclick="openLightbox(this.src)">
-<img src="images/photo-03.jpg" onclick="openLightbox(this.src)">
-<img src="images/photo-04.jpg" onclick="openLightbox(this.src)">
+  <img src="images/photo-01.jpg" data-caption="Quiet sunset by the shore" onclick="openLightbox(0)">
+  <img src="images/photo-02.jpg" data-caption="Golden hour reflections" onclick="openLightbox(1)">
+  <img src="images/photo-03.jpg" data-caption="Stillness and tide" onclick="openLightbox(2)">
+  <img src="images/photo-04.jpg" data-caption="Silhouette against fading light" onclick="openLightbox(3)">
     </div>
     <!-- GRID END -->
 
@@ -108,15 +130,43 @@
     </div>
   </div>
   <script>
-  function openLightbox(src) {
-    const lightbox = document.getElementById("lightbox");
+  const images = document.querySelectorAll(".grid img");
+  let currentIndex = 0;
+
+  function openLightbox(index) {
+    currentIndex = index;
     const img = document.getElementById("lightbox-img");
-    img.src = src;
-    lightbox.style.display = "flex";
+    const caption = document.getElementById("lightbox-caption");
+    img.src = images[index].src;
+    caption.innerText = images[index].dataset.caption || "";
+    document.getElementById("lightbox").style.display = "flex";
   }
 
   function closeLightbox() {
     document.getElementById("lightbox").style.display = "none";
+  }
+
+  // Swipe support
+  let startX = 0;
+
+  document.getElementById("lightbox").addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+  });
+
+  document.getElementById("lightbox").addEventListener("touchend", e => {
+    let endX = e.changedTouches[0].clientX;
+    if (endX < startX - 50) showNext();
+    if (endX > startX + 50) showPrev();
+  });
+
+  function showNext() {
+    currentIndex = (currentIndex + 1) % images.length;
+    openLightbox(currentIndex);
+  }
+
+  function showPrev() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    openLightbox(currentIndex);
   }
   </script>
 </body>
